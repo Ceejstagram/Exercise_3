@@ -104,12 +104,9 @@ The issue is that some varieties were planted in several different plot. Therefo
 
   3. I would like to understand how much money I "saved" by gardening, for each vegetable type. Describe how I could use the `garden_harvest` and `garden_spending` datasets, along with data from somewhere like [this](https://products.wholefoodsmarket.com/search?sort=relevance&store=10542) to answer this question. You can answer this in words, referencing various join functions. You don't need R code but could provide some if it's helpful.
   
-  * Summarize the `garden_harvest` data by vegetable and find how many pounds of each vegetable was harvested.  
-  * Summarize the `garden_spending` data to find amount spent by vegetable type.  
-  * Join those summarized tables together.  
-  * Extract information from the website about how much each vegetable type costs per pound (this part would take some time).  
-  * Join the cost data to the already joined data. Figure out how much money would have been spent by multiplying total harvest in pounds by cost per pound info from website. Subtract off amount spent.
   
+First, we need to summarize 2 data sets - garden_harvest and garden_spending. For garden_harvest, we need to summarize the data by vegetable to see how many pounds of each was harvested. For garden_spending, we need to summarize it so find out the amount spent by vegetable. Then, we need to merge the summarized output together. Then we need to look at the website to find out how much each vegetable costs, and multiply its weight by its cost to get a total cost.
+
 
   4. Subset the data to tomatoes. Reorder the tomato varieties from smallest to largest first harvest date. Create a barplot of total harvest in pounds for each variety, in the new order.CHALLENGE: add the date near the end of the bar. (This is probably not a super useful graph because it's difficult to read. This is more an exercise in using some of the functions you just learned.)
 
@@ -275,9 +272,8 @@ Trips %>%
   labs(x = "Time of Day", y = "")
 ```
 
-*  The other graph (below) makes it easier to see that casual riders have a similar pattern on weekdays and weekends, whereas the registered riders do more commuting on weekdays and mostly nice day-time riding on weekends.
+The graph above makes it easier to see that casual riders have a similar have more similar patterns on weekdays and weekends, whereas registered riders have a more irregular pattern during weekdays and weekends.
 
-  They both can work. Faceting on `wday` and filling with `client` allows us to see that the casual and registered riders behave similarly on the weekends but have very different patterns on the weekdays where registered riders seem to use it for commuting to and from work while casual riders seem to ride it during the daytime hours when it is likely nice out. 
 
 ### Spatial patterns
 
@@ -327,24 +323,33 @@ breed_traits_total %>%
 ```
 
 
-
   18. The final product of this exercise will be a graph with the top-20 dogs in total ratings (from previous problem) on the y-axis, year on the x-axis, and points colored by each breed's ranking for that year (from the `breed_rank_all` dataset). The points within each breed will be connected by a line, and the breeds should be arranged from the highest median rank to lowest median rank ("highest" is actually the smallest numer, eg. 1 = best). After you're finished, think of AT LEAST one thing you could you do to make this graph better. HINTS: 1. Start with the `breed_rank_all` dataset and pivot it so year is a variable. 2. Use the `separate()` function to get year alone, and there's an extra argument in that function that can make it numeric. 3. For both datasets used, you'll need to `str_squish()` Breed before joining. 
   
-```{r}
-breed_rank_all %>% 
-  
+```{r, fig.height= 8, fig.width = 4}
+breed_traits_total_1 <- breed_traits_total %>% 
+  filter(total_rating <= 41)
+
+breed_traits_total_1 %>% 
+  ggplot() +
+  geom_jitter(aes(x = Breed, y = total_rating))
 ```
   
   19. Create your own! Requirements: use a `join` or `pivot` function (or both, if you'd like), a `str_XXX()` function, and a `fct_XXX()` function to create a graph using any of the dog datasets. One suggestion is to try to improve the graph you created for the Tidy Tuesday assignment. If you want an extra challenge, find a way to use the dog images in the `breed_rank_all` file - check out the `ggimage` library and [this resource](https://wilkelab.org/ggtext/) for putting images as labels.
   
 ```{r}
-
+breed_traits%>% 
+  left_join(breed_rank_all) %>% 
+  filter(Breed %in% c("Beagles", "Boxers", "Pugs", "Pekingese", "Pomeranians", "Dalmatians", "Whippets", "Azawakhs", "Akitas", "Basenjis", "Barbets", "Beaucerons", "Vizslas", "Bloodhounds", "Boerboels")) %>% 
+  mutate(breed_upper = str_to_title(Breed)) %>% 
+  ggplot() +
+  geom_jitter(aes(x = `Affectionate With Family`, y = `Playfulness Level` , color = Breed))
 ```
   
 ## GitHub link
 
   20. Below, provide a link to your GitHub page with this set of Weekly Exercises. Specifically, if the name of the file is 03_exercises.Rmd, provide a link to the 03_exercises.md file, which is the one that will be most readable on GitHub.
-  
+
+https://github.com/Ceejstagram/Exercise_3/blob/main/HW3
 
 
 ## Challenge problem! 
